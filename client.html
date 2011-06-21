@@ -1,0 +1,31 @@
+<html>
+<head>
+    <script type="text/javascript">
+    var proj_url;
+    function require(url)
+    {
+        document.write('<script type="text/javascript" src="'+url+'"><\/script>');
+    }
+    jQuery = require("http://localhost:8000/Documents/Wubulous/jquery-1.6.1.min.js");
+    require("http://localhost:8000/Documents/Wubulous/md5.js");
+    require("http://localhost:8000/Documents/Wubulous/usernamepass.js");
+    
+    function auth_callback(data)
+    {
+        alert(data);
+    }
+
+    function lookup_account(email, pass)
+    {
+        var pass_hash = hash_username_password(email, pass);
+        console.info(email, pass, pass_hash);
+        jQuery.get(proj_url+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback(data));
+    }
+    </script>
+</head>
+<body>
+Email: <input type="text" id="email" /></br>
+Password: <input type="text" id="pass" /></br>
+<input type="button" value="Click me" onclick="lookup_account(document.getElementById('email').value, document.getElementById('pass').value)">
+</body>
+</html>
