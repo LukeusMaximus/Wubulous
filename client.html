@@ -17,21 +17,18 @@
     
     function auth_callback(data)
     {
-        alert(data);
+        console.log(data);
     }
 
     function lookup_account(email, pass)
     {
         var pass_hash = hash_username_password(email, pass);
         console.info(email, pass, pass_hash);
-        jQuery.get(proj_url+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback(data));
+        $.get(proj_url+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback);
     }
     lookup_account("default@default.com", "default")
     </script>
 </head>
 <body>
-Email: <input type="text" id="email" /></br>
-Password: <input type="text" id="pass" /></br>
-<input type="button" value="Click me" onclick="lookup_account(document.getElementById('email').value, document.getElementById('pass').value)">
 </body>
 </html>
