@@ -1,10 +1,14 @@
 <html>
 <head>
+    <script type="text/javascript">
+        var proj_url = "http://wubulous.isburning.me/boinctest";
+        var CGI_ROOT = "http://wubulous.isburning.me/boinctest_cgi";
+    </script>
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript" src="md5.js"></script>
     <script type="text/javascript" src="usernamepass.js"></script>
+    <script type="text/javascript" src="schedrequest.js"></script>
     <script type="text/javascript">
-    var proj_url = "http://wubulous.isburning.me/boinctest";
     var auth_token = "";
     var username = "default";
     var password = "default";
@@ -26,7 +30,9 @@
         console.info(email, pass, pass_hash);
         $.get(proj_url+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback);
     }
-    lookup_account("default@default.com", "default")
+    
+    schedule_request();
+
     </script>
 </head>
 <body>
