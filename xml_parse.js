@@ -9,6 +9,7 @@ function is_valid_auth(xml)
     else
     {
         //Error occurred, return error code and error message
-        return {err_code:xml.getElementsByTagName("error_num")[0].childNodes[0].nodeValue, msg:xml.getElementsByTagName("error_msg")[0].childNodes[0].nodeValue}
+        return {err_code:xml.getElementsByTagName("error_num")[0].childNodes[0].nodeValue, 
+                msg:xml.getElementsByTagName("error_msg")[0].childNodes[0].nodeValue}
     }
 }
