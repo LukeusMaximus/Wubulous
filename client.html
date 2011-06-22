@@ -1,14 +1,16 @@
 <html>
 <head>
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+    <script type="text/javascript" src="md5.js"></script>
+    <script type="text/javascript" src="usernamepass.js"></script>
     <script type="text/javascript">
     var proj_url;
     function require(url)
     {
         document.write('<script type="text/javascript" src="'+url+'"><\/script>');
     }
-    require("http://localhost:8000/Documents/Wubulous/md5.js");
-    require("http://localhost:8000/Documents/Wubulous/usernamepass.js");
+    require(proj_url + "/md5.js");
+    require(proj_url + "/usernamepass.js");
     
     function auth_callback(data)
     {
