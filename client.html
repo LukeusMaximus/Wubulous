@@ -4,7 +4,10 @@
     <script type="text/javascript" src="md5.js"></script>
     <script type="text/javascript" src="usernamepass.js"></script>
     <script type="text/javascript">
-    var proj_url;
+    var proj_url = "http://wubulous.isburning.me/boinctest";
+    var auth_token = "";
+    var username = "default";
+    var password = "default";
     function require(url)
     {
         document.write('<script type="text/javascript" src="'+url+'"><\/script>');
@@ -23,6 +26,7 @@
         console.info(email, pass, pass_hash);
         jQuery.get(proj_url+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback(data));
     }
+    lookup_account("default@default.com", "default")
     </script>
 </head>
 <body>
