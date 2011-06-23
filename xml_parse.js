@@ -97,11 +97,14 @@ function update_authenticator(xml_str, authenticator) {
 /**
  * Increments the rpc_seqno
  */
+
+var global_rpc_seqno = 0;
+
 function increment_rpcno(xml_str) {
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
-    var num = (parseInt($(xml).find("rpc_seqno").text())) + 1;
-    $(xml).find("rpc_seqno").text(num.toString());
+    $(xml).find("rpc_seqno").text(global_rpc_seqno.toString());
+    global_rpc_seqno += 1;
     return (new XMLSerializer()).serializeToString(xml);
 }
 

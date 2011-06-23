@@ -38,10 +38,15 @@ function parse_config_and_execute_work_unit(work_unit_config) {
 function execute_work(data) {
     var x = eval("(" + data + ")");
     console.log(x.main());
+    report_work_back();
+}
+
+function report_work_back() {
+    
 }
 
 var standard_request = ['<scheduler_request>', 
-                        '    <authenticator>cd83b81e4874b95c24a26b44ef1a73e8</authenticator>', 
+                        '    <authenticator>0</authenticator>', 
                         '    <core_client_major_version>6</core_client_major_version>', 
                         '    <core_client_minor_version>10</core_client_minor_version>', 
                         '    <core_client_release>59</core_client_release>', 
