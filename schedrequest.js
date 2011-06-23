@@ -1,3 +1,8 @@
+var interval_to_cancel;
+
+function set_interval_cancel(handle) {
+    interval_to_cancel = handle;
+}
 
 function work_callback(data) {
     console.log(data)
