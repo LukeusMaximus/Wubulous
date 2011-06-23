@@ -8,16 +8,23 @@
     <script type="text/javascript" src="md5.js"></script>
     <script type="text/javascript" src="usernamepass.js"></script>
     <script type="text/javascript" src="schedrequest.js"></script>
+    <script type="text/javascript" src="xml_parse.js"></script>
     <script type="text/javascript">
     var auth_token = "";
     var username = "default@default.com";
     var password = "default";
+    var scheduler_request_timeout_handle;
     
     function auth_callback(data)
     {
         console.log(data);
-        console.log("starting scheduler request loop");
-        schedule_request();
+        var isvalid = is_valid_auth(data);
+        if (isvalid.err_code == 0) {
+            var to_execute = "clearTimeout(scheduler_request_timeout_handle);";
+            to_execute    += "schedule_request(\"" + isvalid.msg + "\");";
+            console.log(to_execute)
+            scheduler_request_timeout_handle = setTimeout(to_execute, 1000);
+        }
     }
 
     function lookup_account(email, pass)
