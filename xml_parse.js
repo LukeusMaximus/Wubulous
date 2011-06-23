@@ -65,3 +65,14 @@ function update_authenticator(xml_str, authenticator) {
     return (new XMLSerializer()).serializeToString(xml);
 }
 
+/**
+ * Increments the rpc_seqno
+ */
+function increment_rpcno(xml_str) {
+    var xml_parser = new DOMParser();
+    var xml = xml_parser.parseFromString(xml_str, "text/xml");
+    var num = (parseInt($(xml).find("rpc_seqno").text())) + 1;
+    $(xml).find("rpc_seqno").text(num.toString());
+    return (new XMLSerializer()).serializeToString(xml);
+}
+
