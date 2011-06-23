@@ -1,3 +1,9 @@
+/*
+Returns and object of the form {err_code, msg}
+Where err_code is 0 only if the auth was valid
+msg contains the authentificator if it was valid
+and an error message if it wasn't
+*/
 function is_valid_auth(xml)
 {
     errcode = xml.getElementsByTagName("error_num");
