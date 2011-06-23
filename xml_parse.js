@@ -28,3 +28,21 @@ function has_work(xml)
 {
     return (xml.getElementsByTagName("file_info").length > 0)
 }
+
+/**
+ * Returns the host id if it exists
+ * returns null otherwise
+ */
+function get_host_id_from_scheduler_request(xml)
+{
+    if(xml.getElementsByTagName("hostid").length == 0)
+    {
+        return null;
+    }
+    else
+    {
+        var e = xml.getElementsByTagName("hostid")[0];
+        return e.childNodes[0].nodeValue;
+    }
+    return 
+}
