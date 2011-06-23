@@ -1,7 +1,7 @@
 <html>
 <head>
     <script type="text/javascript">
-        var proj_url = "http://wubulous.isburning.me/boinctest";
+        var PROJ_URL = "http://wubulous.isburning.me/boinctest";
         var CGI_ROOT = "http://wubulous.isburning.me/boinctest_cgi";
     </script>
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
@@ -16,8 +16,8 @@
     {
         document.write('<script type="text/javascript" src="'+url+'"><\/script>');
     }
-    require(proj_url + "/md5.js");
-    require(proj_url + "/usernamepass.js");
+    require(PROJ_URL + "/md5.js");
+    require(PROJ_URL + "/usernamepass.js");
     
     function auth_callback(data)
     {
@@ -28,7 +28,7 @@
     {
         var pass_hash = hash_username_password(email, pass);
         console.info(email, pass, pass_hash);
-        $.get(proj_url+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback);
+        $.get(PROJ_URL+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback);
     }
     
     schedule_request();
