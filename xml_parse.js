@@ -55,5 +55,13 @@ function update_request_xml(xml_str, host_id) {
     return (new XMLSerializer()).serializeToString(xml);
 }
 
-
+/**
+ * Changes the authenticator to the given authenticator
+ */
+function update_authenticator(xml_str, authenticator) {
+    var xml_parser = new DOMParser();
+    var xml = xml_parser.parseFromString(xml_str, "text/xml");
+    $(xml).find("authenticator").text(authenticator);
+    return (new XMLSerializer()).serializeToString(xml);
+}
 
