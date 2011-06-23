@@ -1,12 +1,27 @@
+var interval_to_cancel;
+
+function set_interval_cancel(handle) {
+    interval_to_cancel = handle;
+}
 
 function work_callback(data) {
-    console.log(data)
+    var host_id = get_host_id_from_scheduler_request(data);
+    if (host_id != null) update_request_xml(standard_request, host_id); 
+    if (has_work(data)) {
+        console.log("got work, canceling interval");
+        clearInterval(interval_to_cancel);
+        do_work(data);
+    } else {
+        console.log("got no work");
+    }
+}
+
+function do_work(data) {
+    console.log("data");
 }
 
 var standard_request = ['<scheduler_request>', 
                         '    <authenticator>cd83b81e4874b95c24a26b44ef1a73e8</authenticator>', 
-                        '    <hostid>1</hostid>', 
-                        '    <rpc_seqno>0</rpc_seqno>', 
                         '    <core_client_major_version>6</core_client_major_version>', 
                         '    <core_client_minor_version>10</core_client_minor_version>', 
                         '    <core_client_release>59</core_client_release>', 
@@ -45,6 +60,6 @@ var standard_request = ['<scheduler_request>',
                         '<in_progress_results>', 
                         '</in_progress_results>', 
                         '</scheduler_request>', '',''].join("\n")
-function schedule_request() {
+function schedule_request(authtoken) {
     $.post(CGI_ROOT + "/cgi", standard_request, work_callback);
 }
