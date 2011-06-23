@@ -19,3 +19,12 @@ function is_valid_auth(xml)
                 msg:xml.getElementsByTagName("error_msg")[0].childNodes[0].nodeValue}
     }
 }
+
+/*
+Returns true if the server has given the client work,
+returns false otherwise
+*/
+function has_work(xml)
+{
+    return (xml.getElementsByTagName("file_info").length > 0)
+}
