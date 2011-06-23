@@ -1,9 +1,9 @@
-/*
-Returns and object of the form {err_code, msg}
-Where err_code is 0 only if the auth was valid
-msg contains the authentificator if it was valid
-and an error message if it wasn't
-*/
+/**
+ * Returns and object of the form {err_code, msg}
+ * Where err_code is 0 only if the auth was valid
+ * msg contains the authentificator if it was valid
+ * and an error message if it wasn't
+ */
 function is_valid_auth(xml)
 {
     errcode = xml.getElementsByTagName("error_num");
@@ -20,10 +20,10 @@ function is_valid_auth(xml)
     }
 }
 
-/*
-Returns true if the server has given the client work,
-returns false otherwise
-*/
+/**
+ * Returns true if the server has given the client work,
+ * returns false otherwise
+ */
 function has_work(xml)
 {
     return (xml.getElementsByTagName("file_info").length > 0)
