@@ -16,8 +16,28 @@ function work_callback(data) {
     }
 }
 
+var work_unit_url;
+
 function do_work(data) {
-    console.log("data");
+    console.log(data);
+    var work_config_url = get_work_config_url_from_scheduler_result(data);
+    console.log(work_config_url);
+    work_unit_url = get_work_unit_url_from_scheduler_result(data);
+    console.log(work_unit_url);
+    get_config_and_execute(work_config_url)
+}
+
+function get_config_and_execute(work_url) {
+    $.get(work_url, parse_config_and_execute_work_unit); 
+}
+
+function parse_config_and_execute_work_unit(work_unit_config) {
+   $.get(work_unit_url, execute_work) ;
+}
+
+function execute_work(data) {
+    var x = eval("(" + data + ")");
+    console.log(x.main());
 }
 
 var standard_request = ['<scheduler_request>', 
