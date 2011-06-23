@@ -81,7 +81,8 @@ function update_request_xml(xml_str, host_id) {
     scheduler_request_node.appendChild(rpc_seqno_node);
     $(xml).find("hostid").text(host_id);
     $(xml).find("rpc_seqno").text("0");
-    return (new XMLSerializer()).serializeToString(xml);
+    return (new XMLSerializer()).serializeToString(xml)+"\n\n";
+
 }
 
 /**
@@ -91,7 +92,7 @@ function update_authenticator(xml_str, authenticator) {
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     $(xml).find("authenticator").text(authenticator);
-    return (new XMLSerializer()).serializeToString(xml);
+    return (new XMLSerializer()).serializeToString(xml)+"\n\n";
 }
 
 /**
@@ -105,6 +106,6 @@ function increment_rpcno(xml_str) {
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     $(xml).find("rpc_seqno").text(global_rpc_seqno.toString());
     global_rpc_seqno += 1;
-    return (new XMLSerializer()).serializeToString(xml);
+    return (new XMLSerializer()).serializeToString(xml)+"\n\n";
 }
 
