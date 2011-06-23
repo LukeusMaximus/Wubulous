@@ -6,7 +6,8 @@ function set_interval_cancel(handle) {
 
 function work_callback(data) {
     var host_id = get_host_id_from_scheduler_request(data);
-    if (host_id != null) update_request_xml(standard_request, host_id); 
+    if (host_id != null) standard_request = update_request_xml(standard_request, host_id); 
+    standard_request = increment_rpcno(standard_request);
     if (has_work(data)) {
         console.log("got work, canceling interval");
         clearInterval(interval_to_cancel);
