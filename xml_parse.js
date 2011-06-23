@@ -72,6 +72,7 @@ function get_work_unit_url_from_scheduler_result(xml) {
  * XML string
  */
 function update_request_xml(xml_str, host_id) {
+    console.log("updating request xml");
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     var scheduler_request_node = xml.getElementsByTagName("scheduler_request")[0];
@@ -109,3 +110,11 @@ function increment_rpcno(xml_str) {
     return (new XMLSerializer()).serializeToString(xml)+"\n\n";
 }
 
+
+function replace_job_id(xml_str, job_id) {
+    var xml_parser = new DOMParser();
+    var xml = xml_parser.parseFromString(xml_str, "text/xml");
+    $(xml).find("name").text(job_id);
+    return (new XMLSerializer()).serializeToString(xml);
+
+}
