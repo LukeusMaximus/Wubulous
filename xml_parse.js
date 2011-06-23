@@ -46,3 +46,32 @@ function get_host_id_from_scheduler_request(xml)
     }
     return 
 }
+
+function get_work_config_url_from_scheduler_result(xml) {
+    var file_infos = xml.getElementsByTagName("file_info");
+    for (file_info_index in file_infos) {
+        if (file_infos.hasOwnProperty(file_info_index)) {
+            var elem = file_infos[file_info_index];
+            console.log("bees:");
+            console.log(elem);
+            var url_node = elem.getElementsByTagName("url")[0]
+            if (url_node.childNodes[0].nodeValue.indexOf("xml") != -1) {
+                return url_node.childNodes[0].nodeValue;
+            }
+        }
+
+    }
+
+}
+
+function get_work_unit_url_from_scheduler_result(xml) {
+    var file_infos = xml.getElementsByTagName("file_info");
+    for (var i = 2; i < file_infos.length; i++) {
+        if (file_infos[i].getElementsByTagName("executable").length != 0) {
+            var url_node = file_infos[i].getElementsByTagName("url")[0]
+            return url_node.childNodes[0].nodeValue;
+        }
+    }
+
+    return "";
+}
