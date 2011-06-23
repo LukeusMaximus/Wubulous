@@ -18,11 +18,13 @@ function work_callback(data) {
 }
 
 var work_unit_url;
+var job_id;
 
 function do_work(data) {
     console.log(data);
     var work_config_url = get_work_config_url_from_scheduler_result(data);
     console.log(work_config_url);
+    job_id = get_job_id_from_url(work_config_url);
     work_unit_url = get_work_unit_url_from_scheduler_result(data);
     console.log(work_unit_url);
     get_config_and_execute(work_config_url)
@@ -43,7 +45,12 @@ function execute_work(data) {
 }
 
 function report_work_back() {
-    
+    var local_completion = replace_job_id(completed_work_request, job_id);
+    $.post(CGI_ROOT + "/cgi", local_completion, report_callback);
+}
+
+function report_callback(data) {
+    console.log(data);
 }
 
 var standard_request = ['<scheduler_request>', 
