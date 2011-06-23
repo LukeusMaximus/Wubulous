@@ -45,6 +45,6 @@ var standard_request = ['<scheduler_request>',
                         '<in_progress_results>', 
                         '</in_progress_results>', 
                         '</scheduler_request>', '',''].join("\n")
-function schedule_request() {
+function schedule_request(authtoken) {
     $.post(CGI_ROOT + "/cgi", standard_request, work_callback);
 }
