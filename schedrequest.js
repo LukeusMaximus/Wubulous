@@ -4,9 +4,14 @@ function set_interval_cancel(handle) {
     interval_to_cancel = handle;
 }
 
+var global_host_id;
+
 function work_callback(data) {
     var host_id = get_host_id_from_scheduler_request(data);
-    if (host_id != null) standard_request = update_request_xml(standard_request, host_id); 
+    if (host_id != null) {
+        standard_request = update_request_xml(standard_request, host_id);
+        global_host_id = host_id;
+    }
     standard_request = increment_rpcno(standard_request);
     if (has_work(data)) {
         console.log("got work, canceling interval");
