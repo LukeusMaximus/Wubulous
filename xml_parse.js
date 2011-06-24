@@ -115,6 +115,6 @@ function replace_job_id(xml_str, job_id) {
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     $(xml).find("name").text(job_id);
-    return (new XMLSerializer()).serializeToString(xml);
+    return (new XMLSerializer()).serializeToString(xml)+"\n\n";
 
 }
