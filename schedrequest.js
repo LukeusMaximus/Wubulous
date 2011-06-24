@@ -51,6 +51,8 @@ function execute_work(data) {
 
 function report_work_back() {
     var local_completion = replace_job_id(completed_work_request, job_id);
+    local_completion = update_request_xml(local_completion, global_host_id);
+    local_completion = increment_rpcno(local_completion);
     $.post(CGI_ROOT + "/cgi", local_completion, report_callback);
 }
 
