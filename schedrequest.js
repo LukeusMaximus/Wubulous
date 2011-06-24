@@ -29,7 +29,7 @@ function do_work(data) {
     console.log(data);
     var work_config_url = get_work_config_url_from_scheduler_result(data);
     console.log(work_config_url);
-    job_id = get_job_id_from_url(work_config_url);
+    job_id = get_job_id_from_url(work_config_url) + "_0";
     work_unit_url = get_work_unit_url_from_scheduler_result(data);
     console.log(work_unit_url);
     get_config_and_execute(work_config_url)
