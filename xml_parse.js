@@ -107,7 +107,7 @@ function update_authenticator(xml_str, authenticator) {
  * Increments the rpc_seqno
  */
 
-var global_rpc_seqno = 0;
+var global_rpc_seqno = 1;
 
 function increment_rpcno(xml_str) {
     var xml_parser = new DOMParser();
