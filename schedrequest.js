@@ -150,7 +150,7 @@ var completed_work_request = ['<scheduler_request>',
                               '</scheduler_request>', '',''].join("\n");
 
 
-function schedule_request(authtoken) {
+function schedule_request() {
     $.post(CGI_ROOT + "/cgi", standard_request, work_callback);
 }
 
