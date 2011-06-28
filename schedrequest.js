@@ -43,10 +43,44 @@ function parse_config_and_execute_work_unit(work_unit_config) {
    $.get(work_unit_url, execute_work) ;
 }
 
+var work_timer;
+var work_unit;
+
 function execute_work(data) {
-    var x = eval("(" + data + ")");
-    console.log(x.main());
-    report_work_back();
+    work_unit = eval("(" + data + ")");
+    if (!resume_work()) {
+        work_unit.init();
+    }
+    execute();
+}
+
+function execute() {
+    if(!work_unit.isDone()) {
+        work_unit.step();
+        work_timer = setTimeout("execute()", 100);
+    } else {
+        work_unit.finish();
+        report_work_back();
+    }
+}
+
+function save_work() {
+    var state = workunit.save();
+    var work_unit_state = JSON.stringify(state);
+    document.cookie="boinc_work_unit=" + escape(work_unit_state);
+}
+
+function resume_work() {
+    var cookies = document.cookie.split(';');
+    for (cookie in cookies) {
+        if (cookie.substr(0, cookie.indexOf('=')) == "boinc_work_unit") {
+            var work_unit_state = cookie.substr(cookie.indexOf('=') + 1);
+            var state = JSON.parse(work_unit_state);
+            work_unit.resume(state);
+            return true;
+        }
+    }
+    return false;
 }
 
 function report_work_back() {
