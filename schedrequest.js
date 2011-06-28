@@ -11,8 +11,9 @@ function work_callback(data) {
     if (host_id != null) {
         standard_request = update_request_xml(standard_request, host_id);
         global_host_id = host_id;
+    } else {
+        standard_request = increment_rpcno(standard_request);
     }
-    standard_request = increment_rpcno(standard_request);
     if (has_work(data)) {
         console.log("got work, canceling interval");
         clearInterval(interval_to_cancel);
