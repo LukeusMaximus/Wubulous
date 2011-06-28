@@ -24,7 +24,7 @@
             standard_request = update_authenticator(standard_request, isvalid.msg);
             completed_work_request = update_authenticator(completed_work_request, isvalid.msg);
             var to_execute = "schedule_request();";
-            scheduler_request_interval_handle = setInterval(to_execute, 1000);
+            scheduler_request_interval_handle = setInterval(to_execute, 10000);
             set_interval_cancel(scheduler_request_interval_handle);
         }
     }
