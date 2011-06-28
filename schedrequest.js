@@ -62,6 +62,11 @@ function report_work_back() {
 
 function report_callback(data) {
     console.log(data);
+    restart_job_timer();
+}
+
+function restart_job_timer() {
+   scheduler_request_interval_handle = setInterval("schedule_request();", 10000); 
 }
 
 var standard_request = ['<scheduler_request>', 
