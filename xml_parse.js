@@ -76,13 +76,20 @@ function update_request_xml(xml_str, host_id) {
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     var scheduler_request_node = xml.getElementsByTagName("scheduler_request")[0];
-    var host_ID_node = xml.createElement("hostid");
-    var rpc_seqno_node = xml.createElement("rpc_seqno");
-    scheduler_request_node.appendChild(host_ID_node);
-    scheduler_request_node.appendChild(rpc_seqno_node);
+    var nodes = xml.getElementsByTagName("hostid");
+    if (nodes.length == 0) {
+        var host_ID_node = xml.createElement("hostid");
+        var rpc_seqno_node = xml.createElement("rpc_seqno");
+        scheduler_request_node.appendChild(host_ID_node);
+        scheduler_request_node.appendChild(rpc_seqno_node);
+    }
     $(xml).find("hostid").text(host_id);
-    $(xml).find("rpc_seqno").text("0");
-    return (new XMLSerializer()).serializeToString(xml)+"\n\n";
+    $(xml).find("rpc_seqno").text("1");
+    
+    var xml_text = (new XMLSerializer()).serializeToString(xml)+"\n\n";
+    xml_text = xml_text.replace("</hostid>", "</hostid>\n");
+    xml_text = xml_text.replace("</rpc_seqno>", "</rpc_seqno>\n");
+    return xml_text
 
 }
 
