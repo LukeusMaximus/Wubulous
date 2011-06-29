@@ -59,7 +59,7 @@ function execute_work(data) {
 
 var set_host_id_in_report = false;
 
-function report_work_back() {
+function report_work_back(result) {
     var local_completion = replace_job_id(completed_work_request, job_id);
     if (!set_host_id_in_report) local_completion = update_request_xml(local_completion, global_host_id);
     local_completion = increment_rpcno(local_completion);
