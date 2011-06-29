@@ -68,22 +68,23 @@ function get_work_unit_url_from_scheduler_result(xml) {
 
 /**
  * Adds a specified host id and a rpc seqno (of 0)
- * to the specified XML string and returns new the
- * XML string
+ * to the specified XML string (if they do not exist)
+ * and returns a new XML string
  */
 function update_request_xml(xml_str, host_id) {
     console.log("updating request xml");
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     var scheduler_request_node = xml.getElementsByTagName("scheduler_request")[0];
-    var host_ID_node = xml.createElement("hostid");
-    var rpc_seqno_node = xml.createElement("rpc_seqno");
-    scheduler_request_node.appendChild(host_ID_node);
-    scheduler_request_node.appendChild(rpc_seqno_node);
+    if (xml.getElementsByTagName("hostid").length() == 0) {
+        var host_ID_node = xml.createElement("hostid");
+        var rpc_seqno_node = xml.createElement("rpc_seqno");
+        scheduler_request_node.appendChild(host_ID_node);
+        scheduler_request_node.appendChild(rpc_seqno_node);
+    }
     $(xml).find("hostid").text(host_id);
     $(xml).find("rpc_seqno").text("0");
     return (new XMLSerializer()).serializeToString(xml)+"\n\n";
-
 }
 
 /**

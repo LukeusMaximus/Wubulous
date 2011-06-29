@@ -59,8 +59,8 @@ function execute() {
         work_unit.step();
         work_timer = setTimeout("execute()", 100);
     } else {
-        work_unit.finish();
-        report_work_back();
+        var result = work_unit.finish();
+        report_work_back(result);
     }
 }
 
