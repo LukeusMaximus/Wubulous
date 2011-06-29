@@ -158,6 +158,13 @@ var completed_work_request = ['<scheduler_request>',
                               '</in_progress_results>', 
                               '</scheduler_request>', '',''].join("\n");
 
+var upload_result_request = ['<data_server_request>', 
+                             '<core_client_major_version>1</core_client_major_version>', 
+                             '<core_client_minor_version>1</core_client_minor_version>', 
+                             '    <core_client_release>1</core_client_release>', 
+                             '<file_upload>',''].join("\n");
+
+
 
 function schedule_request() {
     $.post(CGI_ROOT + "/cgi", standard_request, work_callback);
