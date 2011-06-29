@@ -123,3 +123,8 @@ function replace_job_id(xml_str, job_id) {
     return (new XMLSerializer()).serializeToString(xml)+"\n\n";
 
 }
+
+function extract_upload_file_string(xml) {
+    var xml_node = xml.getElementsByTagName("upload_when_present")[0].parentNode;
+    return (new XMLSerializer()).serializeToString(xml_node);
+}

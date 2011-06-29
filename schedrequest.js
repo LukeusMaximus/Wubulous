@@ -25,10 +25,15 @@ function work_callback(data) {
 
 var work_unit_url;
 var job_id;
+var file_upload_string;
 
 function do_work(data) {
     console.log(data);
     var work_config_url = get_work_config_url_from_scheduler_result(data);
+    console.log("upload_file_string");
+    console.log(extract_upload_file_string(data));
+    file_upload_string = extract_upload_file_string(data);
+    console.log("upload_file_string");
     console.log(work_config_url);
     job_id = get_job_id_from_url(work_config_url) + "_0";
     work_unit_url = get_work_unit_url_from_scheduler_result(data);
@@ -87,16 +92,32 @@ function resume_work() {
 
 var set_host_id_in_report = false;
 
-function report_work_back() {
+function report_work_back(result) {
     var local_completion = replace_job_id(completed_work_request, job_id);
     if (!set_host_id_in_report) local_completion = update_request_xml(local_completion, global_host_id);
     local_completion = increment_rpcno(local_completion);
     $.post(CGI_ROOT + "/cgi", local_completion, report_callback);
+    upload_result(result);
+}
+
+function upload_result(result) {
+    var string_result = result.toString();
+    var report = upload_result_request;
+    report += file_upload_string + "\n";
+    report += "<nbytes>" + string_result.length +"</nbytes>\n";
+    report += "<md5_cksum>" + hex_md5(string_result) + "</md5_cksum>\n";
+    report += "<offset>0</offset>\n"
+    report += "<data>\n"
+    report += result
+    $.post(CGI_ROOT + "/file_upload_handler", report, upload_callback);
 }
 
 function report_callback(data) {
     console.log(data);
     restart_job_timer();
+}
+
+function upload_callback(data) {
 }
 
 function restart_job_timer() {
@@ -191,6 +212,13 @@ var completed_work_request = ['<scheduler_request>',
                               '<in_progress_results>',
                               '</in_progress_results>', 
                               '</scheduler_request>', '',''].join("\n");
+
+var upload_result_request = ['<data_server_request>', 
+                             '<core_client_major_version>1</core_client_major_version>', 
+                             '<core_client_minor_version>1</core_client_minor_version>', 
+                             '    <core_client_release>1</core_client_release>', 
+                             '<file_upload>',''].join("\n");
+
 
 
 function schedule_request() {
