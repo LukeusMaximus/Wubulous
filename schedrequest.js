@@ -64,11 +64,27 @@ function report_work_back(result) {
     if (!set_host_id_in_report) local_completion = update_request_xml(local_completion, global_host_id);
     local_completion = increment_rpcno(local_completion);
     $.post(CGI_ROOT + "/cgi", local_completion, report_callback);
+    upload_result(result);
+}
+
+function upload_result(result) {
+    var string_result = result.toString();
+    var report = upload_result_request;
+    report += file_upload_string + "\n";
+    report += "<nbytes>" + string_result.length +"</nbytes>\n";
+    report += "<md5_cksum>" + hex_md5(string_result) + "</md5_cksum>\n";
+    report += "<offset>0</offset>\n"
+    report += "<data>\n"
+    report += result
+    $.post(CGI_ROOT + "/file_upload_handler", report, upload_callback);
 }
 
 function report_callback(data) {
     console.log(data);
     restart_job_timer();
+}
+
+function upload_callback(data) {
 }
 
 function restart_job_timer() {
