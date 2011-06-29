@@ -11,8 +11,9 @@ function work_callback(data) {
     if (host_id != null) {
         standard_request = update_request_xml(standard_request, host_id);
         global_host_id = host_id;
+    } else {
+        standard_request = increment_rpcno(standard_request);
     }
-    standard_request = increment_rpcno(standard_request);
     if (has_work(data)) {
         console.log("got work, canceling interval");
         clearInterval(interval_to_cancel);
@@ -83,15 +84,23 @@ function resume_work() {
     return false;
 }
 
+
+var set_host_id_in_report = false;
+
 function report_work_back() {
     var local_completion = replace_job_id(completed_work_request, job_id);
-    local_completion = update_request_xml(local_completion, global_host_id);
+    if (!set_host_id_in_report) local_completion = update_request_xml(local_completion, global_host_id);
     local_completion = increment_rpcno(local_completion);
     $.post(CGI_ROOT + "/cgi", local_completion, report_callback);
 }
 
 function report_callback(data) {
     console.log(data);
+    restart_job_timer();
+}
+
+function restart_job_timer() {
+   scheduler_request_interval_handle = setInterval("schedule_request();", 10000); 
 }
 
 var standard_request = ['<scheduler_request>', 
