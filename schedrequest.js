@@ -51,8 +51,9 @@ function parse_config_and_execute_work_unit(work_unit_config) {
 
 function execute_work(data) {
     var x = eval("(" + data + ")");
-    console.log(x.main());
-    report_work_back();
+    var result = x.main();
+    console.log(result);
+    report_work_back(result);
 }
 
 
