@@ -125,6 +125,11 @@ function replace_job_id(xml_str, job_id) {
 }
 
 function extract_upload_file_string(xml) {
-    var xml_node = xml.getElementsByTagName("upload_when_present")[0].parentNode;
-    return (new XMLSerializer()).serializeToString(xml_node);
+    var elements = xml.getElementsByTagName("upload_when_present")
+    if (elements.length != 0) {
+        var xml_node = xml.getElementsByTagName("upload_when_present")[0].parentNode;
+        return (new XMLSerializer()).serializeToString(xml_node);
+    } else {
+        return null;
+    }
 }
