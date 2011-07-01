@@ -42,8 +42,8 @@ function get_work_config_url_from_scheduler_result(xml) {
     for (file_info_index in file_infos) {
         if (file_infos.hasOwnProperty(file_info_index)) {
             var elem = file_infos[file_info_index];
-            console.log("bees:");
-            console.log(elem);
+            safe_log("bees:");
+            safe_log(elem);
             var url_node = elem.getElementsByTagName("url")[0]
             if (url_node.childNodes[0].nodeValue.indexOf("xml") != -1) {
                 return url_node.childNodes[0].nodeValue;
@@ -72,7 +72,7 @@ function get_work_unit_url_from_scheduler_result(xml) {
  * and returns a new XML string
  */
 function update_request_xml(xml_str, host_id) {
-    console.log("updating request xml");
+    safe_log("updating request xml");
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     var scheduler_request_node = xml.getElementsByTagName("scheduler_request")[0];
