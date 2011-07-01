@@ -71,7 +71,7 @@ function execute() {
         work_timer = setTimeout("execute()", 0);
     } else {
         var result = work_unit.finish();
-        report_work_back(result);
+        setTimeout("report_work_back(result)", 10000);
     }
 }
 
