@@ -61,7 +61,7 @@ function execute_work(data) {
 }
 
 function execute() {
-    if(!work_unit.isDone()) {
+    if(!work_unit.is_done()) {
         work_unit.step();
         work_timer = setTimeout("execute()", 100);
     } else {
