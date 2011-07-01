@@ -51,19 +51,24 @@ function parse_config_and_execute_work_unit(work_unit_config) {
 
 var work_timer;
 var work_unit;
+var step_count;
 
 function execute_work(data) {
     work_unit = eval("(" + data + ")");
     if (!resume_work()) {
         work_unit.init();
     }
+    step_count = 0;
     execute();
 }
 
 function execute() {
+    console.log("Started step " + step_count);
     if(!work_unit.isDone()) {
         work_unit.step();
-        work_timer = setTimeout("execute()", 100);
+        console.log("Finished step " + step_count);
+        step_count++;
+        work_timer = setTimeout("execute()", 0);
     } else {
         var result = work_unit.finish();
         report_work_back(result);
