@@ -76,7 +76,7 @@ function update_request_xml(xml_str, host_id) {
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     var scheduler_request_node = xml.getElementsByTagName("scheduler_request")[0];
-    if (xml.getElementsByTagName("hostid").length() == 0) {
+    if (xml.getElementsByTagName("hostid").length == 0) {
         var host_ID_node = xml.createElement("hostid");
         var rpc_seqno_node = xml.createElement("rpc_seqno");
         scheduler_request_node.appendChild(host_ID_node);
