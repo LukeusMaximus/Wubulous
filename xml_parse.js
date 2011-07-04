@@ -56,9 +56,9 @@ function get_work_config_url_from_scheduler_result(xml) {
 
 function get_work_unit_url_from_scheduler_result(xml) {
     var file_infos = xml.getElementsByTagName("file_info");
-    for (var i = 2; i < file_infos.length; i++) {
+    for (var i = 0; i < file_infos.length; i++) {
         if (file_infos[i].getElementsByTagName("executable").length != 0) {
-            var url_node = file_infos[i].getElementsByTagName("url")[0]
+            var url_node = file_infos[i].getElementsByTagName("url")[0];
             return url_node.childNodes[0].nodeValue;
         }
     }
