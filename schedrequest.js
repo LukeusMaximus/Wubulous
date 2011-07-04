@@ -16,10 +16,10 @@ function work_callback(data) {
     }
     if (has_work(data)) {
         safe_log("got work, canceling interval");
-        clearInterval(interval_to_cancel);
         do_work(data);
     } else {
         safe_log("got no work");
+        setTimeout("schedule_request();", 10000);
     }
 }
 
