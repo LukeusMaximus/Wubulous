@@ -29,14 +29,16 @@ var file_upload_string;
 
 function do_work(data) {
     safe_log(data);
-    var work_config_url = get_work_config_url_from_scheduler_result(data);
     safe_log("upload_file_string");
     safe_log(extract_upload_file_string(data));
     file_upload_string = extract_upload_file_string(data);
     safe_log("upload_file_string");
+    var work_config_url = get_work_config_url_from_scheduler_result(data);
+    safe_log("work_config_url");
     safe_log(work_config_url);
     job_id = get_job_id_from_url(work_config_url) + "_0";
     work_unit_url = get_work_unit_url_from_scheduler_result(data);
+    safe_log("work_unit_url");
     safe_log(work_unit_url);
     get_config_and_execute(work_config_url)
 }
@@ -64,12 +66,11 @@ function execute_work(data) {
 
 function execute() {
     if(!work_unit.is_done()) {
-        safe_log("Started step " + step_count);
         work_unit.step();
-        safe_log("Finished step " + step_count);
         step_count++;
         work_timer = setTimeout("execute()", 0);
     } else {
+        safe_log("work completed");
         var result = work_unit.finish();
         report_work_back(result);
     }
@@ -106,6 +107,7 @@ function report_work_back(result) {
 }
 
 function upload_result(result) {
+    safe_log("uploading work!");
     var string_result = result.toString();
     var report = upload_result_request;
     report += file_upload_string + "\n";
@@ -123,6 +125,7 @@ function report_callback(data) {
 }
 
 function upload_callback(data) {
+    safe_log(data);
 }
 
 function restart_job_timer() {
