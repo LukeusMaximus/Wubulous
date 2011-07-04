@@ -1,0 +1,17 @@
+wubulous readme
+
+any javascript workunits must be objects that implement the following interface
+init(): void
+step(): void
+is_done(): bool
+finish(): string
+save(): dictionary
+resume(dictionary): void
+
+the string returned from finish is used to upload the result back to the 
+server.
+
+step should be made to execute in as little time as possible so as not to lock
+up the event loop of the browser, which will cause it to crash.
+
+a sample implementation of a workunit can be found in md5.job.js
