@@ -121,7 +121,8 @@ function upload_result(result) {
 
 function report_callback(data) {
     safe_log(data);
-    restart_job_timer();
+    if (has_work(data)) work_callback(data);
+    else setTimeout("schedule_request();", 10000);
 }
 
 function upload_callback(data) {
