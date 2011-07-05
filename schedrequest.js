@@ -27,7 +27,7 @@ function work_callback(data) {
         do_work(data);
     } else {
         safe_log("got no work");
-        setTimeout("schedule_request();", 10000);
+        setTimeout("schedule_request();", SCHEDULER_POLLING_RATE);
     }
 }
 
@@ -131,11 +131,14 @@ function upload_result(result) {
     safe_log("uploading work!");
     var string_result = result.toString();
     var report = upload_result_request;
+
+    //build the result
     report += file_upload_string + "\n";
     report += "<nbytes>" + string_result.length +"</nbytes>\n";
     report += "<md5_cksum>" + hex_md5(string_result) + "</md5_cksum>\n";
     report += "<offset>0</offset>\n"
     report += "<data>\n"
+    //add the result data
     report += result
     $.post(CGI_ROOT + "/file_upload_handler", report, upload_callback);
 }
@@ -144,7 +147,7 @@ function upload_result(result) {
 function report_callback(data) {
     safe_log(data);
     if (has_work(data)) work_callback(data);
-    else setTimeout("schedule_request();", 10000);
+    else setTimeout("schedule_request();", SCHEDULER_POLLING_RATE);
 }
 
 //called after we've uploaded work
@@ -153,7 +156,7 @@ function upload_callback(data) {
 }
 
 function restart_job_timer() {
-   scheduler_request_interval_handle = setInterval("schedule_request();", 10000); 
+   scheduler_request_interval_handle = setInterval("schedule_request();", SCHEDULER_POLLING_RATE); 
 }
 
 
