@@ -1,8 +1,3 @@
-var interval_to_cancel;
-
-function set_interval_cancel(handle) {
-    interval_to_cancel = handle;
-}
 
 var global_host_id;
 
@@ -14,6 +9,7 @@ function work_callback(data) {
     } else {
         standard_request = increment_rpcno(standard_request);
     }
+
     if (has_work(data)) {
         safe_log("got work, canceling interval");
         do_work(data);
