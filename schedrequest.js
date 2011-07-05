@@ -2,11 +2,16 @@
 var global_host_id;
 
 function work_callback(data) {
+    //get the host id from the request and use it for communication
+    //with the server. Set it globally so it can be used later
     var host_id = get_host_id_from_scheduler_request(data);
     if (host_id != null) {
         standard_request = update_request_xml(standard_request, host_id);
         global_host_id = host_id;
     } else {
+        //increment the rpc number used in this request so that the server
+        //doesn't give us a new host ID and we aren't generating endless
+        //host ids
         standard_request = increment_rpcno(standard_request);
     }
 
