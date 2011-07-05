@@ -78,6 +78,7 @@ function execute_work(data) {
     execute();
 }
 
+//the wrapper function to execute a workunit to completion
 function execute() {
     if(!work_unit.is_done()) {
         work_unit.step();
@@ -90,12 +91,14 @@ function execute() {
     }
 }
 
+//saves current state to a cookie
 function save_work() {
     var state = workunit.save();
     var work_unit_state = JSON.stringify(state);
     document.cookie="boinc_work_unit=" + escape(work_unit_state);
 }
 
+//resumes current state from a cookie
 function resume_work() {
     var cookies = document.cookie.split(';');
     for (cookie in cookies) {
@@ -112,6 +115,8 @@ function resume_work() {
 
 var set_host_id_in_report = false;
 
+//reports completion of a workunit to the server. Initiates uploading of work 
+//results to the server
 function report_work_back(result) {
     var local_completion = replace_job_id(completed_work_request, job_id);
     if (!set_host_id_in_report) local_completion = update_request_xml(local_completion, global_host_id);
@@ -120,6 +125,8 @@ function report_work_back(result) {
     upload_result(result);
 }
 
+//uploads the result of a workunit to the server, DOES NOT report
+//success or failure
 function upload_result(result) {
     safe_log("uploading work!");
     var string_result = result.toString();
@@ -133,12 +140,14 @@ function upload_result(result) {
     $.post(CGI_ROOT + "/file_upload_handler", report, upload_callback);
 }
 
+//called after we've reported a completed job
 function report_callback(data) {
     safe_log(data);
     if (has_work(data)) work_callback(data);
     else setTimeout("schedule_request();", 10000);
 }
 
+//called after we've uploaded work
 function upload_callback(data) {
     safe_log(data);
 }
@@ -146,6 +155,9 @@ function upload_callback(data) {
 function restart_job_timer() {
    scheduler_request_interval_handle = setInterval("schedule_request();", 10000); 
 }
+
+
+//TODO: generate these instead of just joining a giant hard coded string
 
 var standard_request = ['<scheduler_request>', 
                         '    <authenticator>0</authenticator>', 
