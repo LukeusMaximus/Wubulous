@@ -1,7 +1,8 @@
 
 var global_host_id;
 
-function work_callback(data) {
+
+function parse_and_update_from_scheduler_response(data) {
     //get the host id from the request and use it for communication
     //with the server. Set it globally so it can be used later
     var host_id = get_host_id_from_scheduler_request(data);
@@ -14,6 +15,12 @@ function work_callback(data) {
         //host ids
         standard_request = increment_rpcno(standard_request);
     }
+
+}
+
+function work_callback(data) {
+
+    parse_and_update_from_scheduler_response(data);
 
     if (has_work(data)) {
         safe_log("got work, canceling interval");
