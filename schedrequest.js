@@ -55,18 +55,18 @@ var step_count;
 
 function execute_work(data) {
     work_unit = eval("(" + data + ")");
-    if (!resume_work()) {
-        work_unit.init();
-    }
     step_count = 0;
+    work_unit.init();
+    resume_work();
     execute();
 }
 
 function execute() {
-    console.log("Started step " + step_count);
-    if(!work_unit.isDone()) {
+    if(!work_unit.is_done()) {
         work_unit.step();
-        console.log("Finished step " + step_count);
+        if(step_count % 10 == 0) {
+            console.log("Finished step " + step_count);
+        }
         step_count++;
         work_timer = setTimeout("execute()", 0);
     } else {
@@ -76,24 +76,21 @@ function execute() {
 }
 
 function save_work() {
-    var state = workunit.save();
+    var state = work_unit.save();
     var work_unit_state = JSON.stringify(state);
-    document.cookie="boinc_work_unit=" + escape(work_unit_state);
+    alert("Saving work: " + work_unit_state);
+    $.cookie("boinc_work_unit", work_unit_state);
+    $.cookie("boinc_step_count", step_count);
 }
 
 function resume_work() {
-    var cookies = document.cookie.split(';');
-    for (cookie in cookies) {
-        if (cookie.substr(0, cookie.indexOf('=')) == "boinc_work_unit") {
-            var work_unit_state = cookie.substr(cookie.indexOf('=') + 1);
-            var state = JSON.parse(work_unit_state);
-            work_unit.resume(state);
-            return true;
-        }
-    }
-    return false;
+    console.log("resume work");
+    var work_unit_state = $.cookie("boinc_work_unit")
+    var state = JSON.parse(work_unit_state);
+    step_count = $.cookie("boinc_step_count");
+    console.log("resume at step count " + step_count);
+    work_unit.resume(state);
 }
-
 
 var set_host_id_in_report = false;
 
