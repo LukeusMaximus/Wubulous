@@ -63,12 +63,18 @@ var work_timer;
 var work_unit;
 var step_count;
 
+function parse_and_create_work_unit(data) {
+    var wu = eval("(" + data + ")");
+    wu["resume_work"] = resume_work;
+    return wu;
+}
+
+//downloads and executes the work unit
 function execute_work(data) {
-    work_unit = eval("(" + data + ")");
-    if (!resume_work()) {
-        work_unit.init();
-    }
     step_count = 0;
+    work_unit = parse_and_create_work_unit(data);
+    work_unit.init();
+    work_unit.resume_work();
     execute();
 }
 
