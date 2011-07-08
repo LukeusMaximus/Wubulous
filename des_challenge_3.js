@@ -14,14 +14,18 @@
     "step":function() {
         var current_key = generateRandKey();
         var this_result=des(current_key,this.ciphertext,0,1,this.iv,1);
-        results.push = convertToHex(current_key) + ':' + result:convertToHex(des(current_key,this.ciphertext,0,1,this.iv,1));
+        
+        //chop off the 8 random bytes the library seems to generate
+        this_result.substring(0, this.result.length - 8);
+        
+        this.results.push = convertToHex(current_key) + ':' + result:convertToHex(des(current_key,this.ciphertext,0,1,this.iv,1));
         this.count++;
     },
 
     "convertToHex":function(text) {
         var hext = "";
         for(var i = 0; i < text.length; i++) {
-            hext.push(text.toCharCode().toString(16));
+            hext += (text.charCodeAt(i).toString(16));
         }
         return hext;
     },
@@ -34,7 +38,7 @@
     }
 
     "is_done":function() {
-        if (count >= 256) {
+        if (this.count >= 256) {
             return true;
         }
         return false;
