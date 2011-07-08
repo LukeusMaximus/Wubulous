@@ -1,25 +1,33 @@
-var interval_to_cancel;
-
-function set_interval_cancel(handle) {
-    interval_to_cancel = handle;
-}
 
 var global_host_id;
 
-function work_callback(data) {
+
+function parse_and_update_from_scheduler_response(data) {
+    //get the host id from the request and use it for communication
+    //with the server. Set it globally so it can be used later
     var host_id = get_host_id_from_scheduler_request(data);
     if (host_id != null) {
         standard_request = update_request_xml(standard_request, host_id);
         global_host_id = host_id;
     } else {
+        //increment the rpc number used in this request so that the server
+        //doesn't give us a new host ID and we aren't generating endless
+        //host ids
         standard_request = increment_rpcno(standard_request);
     }
+
+}
+
+function work_callback(data) {
+
+    parse_and_update_from_scheduler_response(data);
+
     if (has_work(data)) {
-        console.log("got work, canceling interval");
-        clearInterval(interval_to_cancel);
+        safe_log("got work, canceling interval");
         do_work(data);
     } else {
-        console.log("got no work");
+        safe_log("got no work");
+        setTimeout("schedule_request();", SCHEDULER_POLLING_RATE);
     }
 }
 
@@ -28,16 +36,18 @@ var job_id;
 var file_upload_string;
 
 function do_work(data) {
-    console.log(data);
-    var work_config_url = get_work_config_url_from_scheduler_result(data);
-    console.log("upload_file_string");
-    console.log(extract_upload_file_string(data));
+    safe_log(data);
+    safe_log("upload_file_string");
+    safe_log(extract_upload_file_string(data));
     file_upload_string = extract_upload_file_string(data);
-    console.log("upload_file_string");
-    console.log(work_config_url);
+    safe_log("upload_file_string");
+    var work_config_url = get_work_config_url_from_scheduler_result(data);
+    safe_log("work_config_url");
+    safe_log(work_config_url);
     job_id = get_job_id_from_url(work_config_url) + "_0";
     work_unit_url = get_work_unit_url_from_scheduler_result(data);
-    console.log(work_unit_url);
+    safe_log("work_unit_url");
+    safe_log(work_unit_url);
     get_config_and_execute(work_config_url)
 }
 
@@ -53,14 +63,22 @@ var work_timer;
 var work_unit;
 var step_count;
 
+function parse_and_create_work_unit(data) {
+    var wu = eval("(" + data + ")");
+    wu["resume_work"] = resume_work;
+    return wu;
+}
+
+//downloads and executes the work unit
 function execute_work(data) {
-    work_unit = eval("(" + data + ")");
     step_count = 0;
+    work_unit = parse_and_create_work_unit(data);
     work_unit.init();
-    resume_work();
+    work_unit.resume_work();
     execute();
 }
 
+//the wrapper function to execute a workunit to completion
 function execute() {
     if(!work_unit.is_done()) {
         work_unit.step();
@@ -70,11 +88,13 @@ function execute() {
         step_count++;
         work_timer = setTimeout("execute()", 0);
     } else {
+        safe_log("work completed");
         var result = work_unit.finish();
         setTimeout("report_work_back(result)", 10000);
     }
 }
 
+//saves current state to a cookie
 function save_work() {
     var state = work_unit.save();
     var work_unit_state = JSON.stringify(state);
@@ -83,6 +103,7 @@ function save_work() {
     $.cookie("boinc_step_count", step_count);
 }
 
+//resumes current state from a cookie
 function resume_work() {
     console.log("resume work");
     var work_unit_state = $.cookie("boinc_work_unit")
@@ -94,6 +115,8 @@ function resume_work() {
 
 var set_host_id_in_report = false;
 
+//reports completion of a workunit to the server. Initiates uploading of work 
+//results to the server
 function report_work_back(result) {
     var local_completion = replace_job_id(completed_work_request, job_id);
     if (!set_host_id_in_report) local_completion = update_request_xml(local_completion, global_host_id);
@@ -102,29 +125,42 @@ function report_work_back(result) {
     upload_result(result);
 }
 
+//uploads the result of a workunit to the server, DOES NOT report
+//success or failure
 function upload_result(result) {
+    safe_log("uploading work!");
     var string_result = result.toString();
     var report = upload_result_request;
+
+    //build the result
     report += file_upload_string + "\n";
     report += "<nbytes>" + string_result.length +"</nbytes>\n";
     report += "<md5_cksum>" + hex_md5(string_result) + "</md5_cksum>\n";
     report += "<offset>0</offset>\n"
     report += "<data>\n"
+    //add the result data
     report += result
     $.post(CGI_ROOT + "/file_upload_handler", report, upload_callback);
 }
 
+//called after we've reported a completed job
 function report_callback(data) {
-    console.log(data);
-    restart_job_timer();
+    safe_log(data);
+    if (has_work(data)) work_callback(data);
+    else setTimeout("schedule_request();", SCHEDULER_POLLING_RATE);
 }
 
+//called after we've uploaded work
 function upload_callback(data) {
+    safe_log(data);
 }
 
 function restart_job_timer() {
-   scheduler_request_interval_handle = setInterval("schedule_request();", 10000); 
+   scheduler_request_interval_handle = setInterval("schedule_request();", SCHEDULER_POLLING_RATE); 
 }
+
+
+//TODO: generate these instead of just joining a giant hard coded string
 
 var standard_request = ['<scheduler_request>', 
                         '    <authenticator>0</authenticator>', 
@@ -136,8 +172,8 @@ var standard_request = ['<scheduler_request>',
                         '    <prrs_fraction>1.000000</prrs_fraction>', 
                         '    <duration_correction_factor>1.000000</duration_correction_factor>', 
                         '    <sandbox>0</sandbox>', 
-                        '    <work_req_seconds>60480.000000</work_req_seconds>', 
-                        '    <cpu_req_secs>60480.000000</cpu_req_secs>', 
+                        '    <work_req_seconds>1.000000</work_req_seconds>', 
+                        '    <cpu_req_secs>1.000000</cpu_req_secs>', 
                         '    <cpu_req_instances>1.000000</cpu_req_instances>', 
                         '    <estimated_delay>0.000000</estimated_delay>', 
                         '    <client_cap_plan_class>1</client_cap_plan_class>', 
@@ -167,8 +203,6 @@ var standard_request = ['<scheduler_request>',
 
 var completed_work_request = ['<scheduler_request>', 
                               '    <authenticator>0</authenticator>', 
-                              '    <hostid>277</hostid>', 
-                              '    <rpc_seqno>8</rpc_seqno>', 
                               '    <core_client_major_version>6</core_client_major_version>',
                               '    <core_client_minor_version>10</core_client_minor_version>',
                               '    <core_client_release>59</core_client_release>',
@@ -177,8 +211,8 @@ var completed_work_request = ['<scheduler_request>',
                               '    <prrs_fraction>1.000000</prrs_fraction>',
                               '    <duration_correction_factor>0.960632</duration_correction_factor>',
                               '    <sandbox>0</sandbox>', 
-                              '    <work_req_seconds>60480.000000</work_req_seconds>', 
-                              '    <cpu_req_secs>60480.000000</cpu_req_secs>', 
+                              '    <work_req_seconds>1.000000</work_req_seconds>', 
+                              '    <cpu_req_secs>1.000000</cpu_req_secs>', 
                               '    <cpu_req_instances>1.000000</cpu_req_instances>', 
                               '    <estimated_delay>0.000000</estimated_delay>', 
                               '    <client_cap_plan_class>1</client_cap_plan_class>', 

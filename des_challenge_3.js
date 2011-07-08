@@ -12,13 +12,9 @@
     },
 
     "step":function() {
-        var current_key = generateRandKey();
+        var current_key = this.generateRandKey();
         var this_result=des(current_key,this.ciphertext,0,1,this.iv,1);
-        
-        //chop off the 8 random bytes the library seems to generate
-        this_result.substring(0, this.result.length - 8);
-        
-        this.results.push = convertToHex(current_key) + ':' + result:convertToHex(des(current_key,this.ciphertext,0,1,this.iv,1));
+        this.results.push(this.convertToHex(current_key) + ':' + this.convertToHex(des(current_key,this.ciphertext,0,1,this.iv,1)));
         this.count++;
     },
 
@@ -33,9 +29,10 @@
     "generateRandKey":function() {
         var key = "";
         for(var i = 0; i < 8; i++) {
-            key.push(String.fromCharCode(Math.floor(Math.random() * 256)))
+            key += String.fromCharCode(Math.floor(Math.random() * 256));
         }
-    }
+        return key;
+    },
 
     "is_done":function() {
         if (this.count >= 256) {
@@ -45,11 +42,11 @@
     },
     
     "finish":function() {
-        return results.join(',');
+        return this.results.join(',');
     },
     
     "save":function() {
-        return {count:this.count, results:this.results}
+        return {count:this.count, results:this.results};
     },
     
     "resume":function(dict) {

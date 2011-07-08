@@ -42,8 +42,8 @@ function get_work_config_url_from_scheduler_result(xml) {
     for (file_info_index in file_infos) {
         if (file_infos.hasOwnProperty(file_info_index)) {
             var elem = file_infos[file_info_index];
-            console.log("bees:");
-            console.log(elem);
+            safe_log("bees:");
+            safe_log(elem);
             var url_node = elem.getElementsByTagName("url")[0]
             if (url_node.childNodes[0].nodeValue.indexOf("xml") != -1) {
                 return url_node.childNodes[0].nodeValue;
@@ -56,9 +56,9 @@ function get_work_config_url_from_scheduler_result(xml) {
 
 function get_work_unit_url_from_scheduler_result(xml) {
     var file_infos = xml.getElementsByTagName("file_info");
-    for (var i = 2; i < file_infos.length; i++) {
+    for (var i = 0; i < file_infos.length; i++) {
         if (file_infos[i].getElementsByTagName("executable").length != 0) {
-            var url_node = file_infos[i].getElementsByTagName("url")[0]
+            var url_node = file_infos[i].getElementsByTagName("url")[0];
             return url_node.childNodes[0].nodeValue;
         }
     }
@@ -72,11 +72,11 @@ function get_work_unit_url_from_scheduler_result(xml) {
  * and returns a new XML string
  */
 function update_request_xml(xml_str, host_id) {
-    console.log("updating request xml");
+    safe_log("updating request xml");
     var xml_parser = new DOMParser();
     var xml = xml_parser.parseFromString(xml_str, "text/xml");
     var scheduler_request_node = xml.getElementsByTagName("scheduler_request")[0];
-    if (xml.getElementsByTagName("hostid").length() == 0) {
+    if (xml.getElementsByTagName("hostid").length == 0) {
         var host_ID_node = xml.createElement("hostid");
         var rpc_seqno_node = xml.createElement("rpc_seqno");
         scheduler_request_node.appendChild(host_ID_node);
@@ -125,6 +125,11 @@ function replace_job_id(xml_str, job_id) {
 }
 
 function extract_upload_file_string(xml) {
-    var xml_node = xml.getElementsByTagName("upload_when_present")[0].parentNode;
-    return (new XMLSerializer()).serializeToString(xml_node);
+    var elements = xml.getElementsByTagName("upload_when_present")
+    if (elements.length != 0) {
+        var xml_node = xml.getElementsByTagName("upload_when_present")[0].parentNode;
+        return (new XMLSerializer()).serializeToString(xml_node);
+    } else {
+        return null;
+    }
 }

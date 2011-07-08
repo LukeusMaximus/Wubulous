@@ -4,6 +4,8 @@
         var PROJ_URL = "http://wubulous.isburning.me/boinctest";
         var CGI_ROOT = "http://wubulous.isburning.me/boinctest_cgi";
     </script>
+    <script type="text/javascript" src="constants.js"></script>
+    <script type="text/javascript" src="console.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript" src="md5.js"></script>
     <script type="text/javascript" src="usernamepass.js"></script>
@@ -18,21 +20,20 @@
     
     function auth_callback(data)
     {
-        console.log(data);
+        safe_log(data);
         var isvalid = is_valid_auth(data);
         if (isvalid.err_code == 0) {
             standard_request = update_authenticator(standard_request, isvalid.msg);
             completed_work_request = update_authenticator(completed_work_request, isvalid.msg);
             var to_execute = "schedule_request();";
-            scheduler_request_interval_handle = setInterval(to_execute, 10000);
-            set_interval_cancel(scheduler_request_interval_handle);
+            scheduler_request_interval_handle = setTimeout(to_execute, SCHEDULER_POLLING_RATE);
         }
     }
 
     function lookup_account(email, pass)
     {
         var pass_hash = hash_username_password(email, pass);
-        console.info(email, pass, pass_hash);
+        safe_log([email, pass, pass_hash]);
         $.get(PROJ_URL+"/lookup_account.php", {"email_addr":email, "passwd_hash":pass_hash}, auth_callback);
     }
     lookup_account(username, password);
