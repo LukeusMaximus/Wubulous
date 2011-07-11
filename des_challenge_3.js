@@ -14,14 +14,19 @@
     "step":function() {
         var current_key = this.generateRandKey();
         var this_result=des(current_key,this.ciphertext,0,1,this.iv,1);
-        this.results.push(this.convertToHex(current_key) + ':' + this.convertToHex(des(current_key,this.ciphertext,0,1,this.iv,1)));
+        this_result = this_result.substring(0, this_result.length - 16);
+        this.results.push(this.convertToHex(current_key) + ',' + this.convertToHex(this_result));
         this.count++;
     },
 
     "convertToHex":function(text) {
         var hext = "";
         for(var i = 0; i < text.length; i++) {
-            hext += (text.charCodeAt(i).toString(16));
+            charHex = text.charCodeAt(i).toString(16);
+            while(charHex.length < 2) {
+                charHex = '0' + charHex;
+            }
+            hext += charHex;
         }
         return hext;
     },

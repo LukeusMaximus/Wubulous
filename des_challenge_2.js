@@ -26,7 +26,11 @@
     "convertToHex":function(text) {
         var hext = "";
         for(var i = 0; i < text.length; i++) {
-            hext += (text.charCodeAt(i).toString(16));
+            charHex = text.charCodeAt(i).toString(16);
+            while(charHex.length < 2) {
+                charHex = '0' + charHex;
+            }
+            hext += charHex;
         }
         return hext;
     },
