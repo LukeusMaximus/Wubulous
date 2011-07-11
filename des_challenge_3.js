@@ -42,7 +42,7 @@
     },
     
     "finish":function() {
-        return this.results.join(',');
+        return this.results.join('\n');
     },
     
     "save":function() {
