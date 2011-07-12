@@ -44,7 +44,7 @@
     },
 
     "is_done":function() {
-        if (this.count >= 256) {
+        if (this.count >= 32768) {
             return true;
         }
         return false;
