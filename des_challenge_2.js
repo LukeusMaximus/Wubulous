@@ -12,15 +12,29 @@
         ,0x40,0xe2,0x65,0x76,0x3b,0xd6,0x6c,0x38);
         this.iv = String.fromCharCode(0x09,0xf0,0x04,0x15,0xc7,0xc3,0x6d,0x8e);
         this.count = 0;
-        this.results = [];
+        this.result = "0";
     },
-
+    
     "step":function() {
         var current_key = this.generateRandKey();
-        var this_result=des(current_key,this.ciphertext,0,1,this.iv,1);
-        this_result = this_result.substring(0, this_result.length - 16);
-        this.results.push(this.convertToHex(current_key) + ',' + this.convertToHex(this_result));
+        var result=des(current_key,this.ciphertext,0,1,this.iv,1);
+        //remove 8 bytes of "chaff"
+        result = result.substring(0, result.length - 16);
+        //fast fail on non-printable characters
+        if(this.is_printable(result)) {
+            this.result = "1," + this.convertToHex(current_key) + "," + result;
+        }
         this.count++;
+    },
+
+    "is_printable":function(result) {
+        for (var i = 0; i < result.length; i++) {
+            var char_code = result.charCodeAt(i);
+            if(char_code < 32 || char_code >= 127) {
+                return false;
+            }
+        }
+        return true;
     },
 
     "convertToHex":function(text) {
@@ -44,22 +58,22 @@
     },
 
     "is_done":function() {
-        if (this.count >= 32768) {
+        if (this.count >= 5000 || this.result != "0") {
             return true;
         }
         return false;
     },
     
     "finish":function() {
-        return this.results.join('\n');
+        return this.result;
     },
     
     "save":function() {
-        return {count:this.count, results:this.results};
+        return {count:this.count, result:this.result};
     },
     
     "resume":function(dict) {
         this.count = dict.count;
-        this.results = dict.results;
+        this.result = dict.result;
     }
 }
