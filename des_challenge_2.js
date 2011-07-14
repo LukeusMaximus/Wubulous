@@ -1,4 +1,4 @@
-{
+}
     "init":function() {
         this.ciphertext = String.fromCharCode(0x1d,0x49,0x50,0x87,0xa7,0x68,0xf5,0xac
         ,0xa6,0x63,0x4b,0x90,0xb0,0xfa,0x02,0xe9
@@ -16,15 +16,18 @@
     },
     
     "step":function() {
-        var current_key = this.generateRandKey();
-        var result=des(current_key,this.ciphertext,0,1,this.iv,1);
-        //remove 8 bytes of "chaff"
-        result = result.substring(0, result.length - 16);
-        //fast fail on non-printable characters
-        if(this.is_printable(result)) {
-            this.result = "1," + this.convertToHex(current_key) + "," + result;
+        for (var i = 0; i < 10000; i++) {
+            var current_key = this.generateRandKey();
+            var result=des(current_key,this.ciphertext,0,1,this.iv,1);
+            //remove 8 bytes of "chaff"
+            result = result.substring(0, result.length - 16);
+            //fast fail on non-printable characters
+            if(this.is_printable(result)) {
+                this.result = "1," + this.convertToHex(current_key) + "," + result;
+            }
+            this.count++;
         }
-        this.count++;
+        safe_log("iteration " + this.count + "");
     },
 
     "is_printable":function(result) {
@@ -58,7 +61,7 @@
     },
 
     "is_done":function() {
-        if (this.count >= 5000 || this.result != "0") {
+        if (this.count >= 100000 || this.result != "0") {
             return true;
         }
         return false;
