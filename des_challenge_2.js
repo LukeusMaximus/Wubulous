@@ -1,4 +1,4 @@
-}
+{
     "init":function() {
         this.ciphertext = String.fromCharCode(0x1d,0x49,0x50,0x87,0xa7,0x68,0xf5,0xac
         ,0xa6,0x63,0x4b,0x90,0xb0,0xfa,0x02,0xe9
@@ -13,13 +13,17 @@
         this.iv = String.fromCharCode(0x09,0xf0,0x04,0x15,0xc7,0xc3,0x6d,0x8e);
         this.count = 0;
         this.result = "0";
+        this.start = String.fromCharCode(0x00,0x11,0x22,0x33,0x44,0x55,0x00,0x00);
+        this.keys_to_test = 0xffff;
+        this.key = "";
     },
     
     "step":function() {
-        for (var i = 0; i < 10000; i++) {
-            var current_key = this.generateRandKey();
+        for (var i = 0; i < 0x400; i++) {
+            var current_key = this.next_key();
+            this.key = current_key;
             var result=des(current_key,this.ciphertext,0,1,this.iv,1);
-            //remove 8 bytes of "chaff"
+            //remove 16 bytes of "chaff"
             result = result.substring(0, result.length - 16);
             //fast fail on non-printable characters
             if(this.is_printable(result)) {
@@ -27,7 +31,18 @@
             }
             this.count++;
         }
-        safe_log("iteration " + this.count + "");
+        safe_log("iteration = " + this.count + ", key = " + this.convertToHex(this.key));
+    },
+
+    "next_key":function() {
+        var count_munge = this.count
+        key = "";
+        for(var i = 7; i >= 0; i--) {
+            hex_pair = (this.start.charCodeAt(i) + count_munge) % 256;
+            count_munge = count_munge >> 8;
+            key = String.fromCharCode(hex_pair) + key;
+        }
+        return key;
     },
 
     "is_printable":function(result) {
@@ -52,16 +67,9 @@
         return hext;
     },
 
-    "generateRandKey":function() {
-        var key = "";
-        for(var i = 0; i < 8; i++) {
-            key += String.fromCharCode(Math.floor(Math.random() * 256));
-        }
-        return key;
-    },
-
     "is_done":function() {
-        if (this.count >= 100000 || this.result != "0") {
+        if (this.count >= this.keys_to_test || this.result != "0") {
+            safe_log(this.convertToHex(this.key));
             return true;
         }
         return false;
