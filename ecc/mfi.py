@@ -2,7 +2,10 @@ import gmpy
 
 class mfi:
     def __init__(self, i, n):
-        self.val = gmpy.mpz(i)
+        if str(i.__class__).find("mfi") != -1:
+            self.val = i.val
+        else:
+            self.val = gmpy.mpz(i)
         self.mod = gmpy.mpz(n)
     #comparisons
     def __eq__(self, x):
@@ -53,18 +56,18 @@ class mfi:
 def main():
     a = mfi(4,7)
     b = mfi(5,7)
-    print str(a + b)
-    print str(a * b)
-    print str(a - b)
-    print str(a.modinv())
-    print str(b.modinv())
-    print str(a - 2)
-    print str(b + a + 496)
-    print str(b * 3)
-    print str(a > b)
-    print str(a == b)
-    print str(a <= b)
-    print str(a != b)
+    print str(a + b) #2
+    print str(a * b) #6
+    print str(a - b) #6
+    print str(a.modinv()) #2
+    print str(b.modinv()) #3
+    print str(a - 2) #2
+    print str(b + a + 496) #1
+    print str(b * 3) #1
+    print str(a > b) #False
+    print str(a == b) #False
+    print str(a <= b) #True
+    print str(a != b) #True
 
 if __name__ == "__main__":
     main()
