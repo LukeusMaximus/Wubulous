@@ -17,7 +17,7 @@ class mfi:
     def __str__(self):
         return str(self.val)
 
-def __main__:
+def main():
     a = mfi(4,7)
     b = mfi(5,7)
     print str(a + b)
