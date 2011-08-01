@@ -61,6 +61,10 @@ def main():
     print str(a - 2)
     print str(b + a + 496)
     print str(b * 3)
+    print str(a > b)
+    print str(a == b)
+    print str(a <= b)
+    print str(a != b)
 
 if __name__ == "__main__":
     main()
