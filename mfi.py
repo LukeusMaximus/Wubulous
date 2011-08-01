@@ -5,10 +5,16 @@ class mfi:
         self.val = gmpy.mpz(i)
         self.mod = gmpy.mpz(n)
     def __add__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
         return mfi((self.val + x.val) % self.mod, self.mod)
     def __sub__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
         return mfi((self.val - x.val) % self.mod, self.mod)
     def __mul__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
         return mfi((self.val * x.val) % self.mod, self.mod)
     def modinv(self):
         return mfi(gmpy.invert(self.val, self.mod), self.mod)
@@ -17,7 +23,7 @@ class mfi:
     def __str__(self):
         return str(self.val)
 
-def __main__:
+def main():
     a = mfi(4,7)
     b = mfi(5,7)
     print str(a + b)
@@ -25,6 +31,9 @@ def __main__:
     print str(a - b)
     print str(a.modinv())
     print str(b.modinv())
+    print str(a - 2)
+    print str(b + a + 496)
+    print str(b * 3)
 
 if __name__ == "__main__":
     main()
