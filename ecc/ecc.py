@@ -13,19 +13,41 @@ class ecc:
         rhs = x * x * x + self.a4 * x + self.a6
 
         return lhs == rhs
-
+        
+#    def get_points_list(self):
+#        points = []
+#        for i in xrange(0, self.mod):
+#            for j in xrange(0, self.mod):
+#                if self.satisfies_curve(i, j):
+#                    points.append((i,j))
+#        return points
+#
     def get_points_list(self):
+        point = None
         points = []
+        print "starting"
         for i in xrange(0, self.mod):
+            print i
             for j in xrange(0, self.mod):
-                if self.satisfies_curve(i, j):
-                    points.append((i,j))
-        return points
+                if (j & (0x100-1) == 0): print j,self.mod
+                if self.satisfies_curve(i,j):
+                    point = (i,j)
+                    break
+            if point != None:   
+                break
+        print "got point"
+        points.append(point)
+        accum = (mfi(point[0], self.mod), mfi(point[1], self.mod))
+        for i in xrange(2,self.mod):
+            accum = self.add(accum[0],accum[1],point[0],point[1])
+            if accum not in points: points.append(accum)
 
+        return points
     def negate(self, x,y):
         x = mfi(x, self.mod)
         y = mfi(y, self.mod)
         return x, y + x
+
     def modinv(self, n):
         n = mfi(n, self.mod)
         return n.modinv()
@@ -80,8 +102,11 @@ class ecc:
 if __name__ == "__main__":
     x = []
     y = []
-    curve = ecc(1,3,7)
+    curve = ecc(2147483656,2060571714,2147483659)
     pairs = curve.get_points_list()
+    for x in pairs:
+        if x[0].val == 1466500883:
+            print x[1].val
     print curve.double(pairs[0][0], pairs[0][1])
     print curve.multiply(pairs[0][0], pairs[0][1], 2)
 
