@@ -4,6 +4,32 @@ class mfi:
     def __init__(self, i, n):
         self.val = gmpy.mpz(i)
         self.mod = gmpy.mpz(n)
+    #comparisons
+    def __eq__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
+        return self.val == x.val
+    def __gt__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
+        return self.val > x.val
+    def __ge__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
+        return self.val >= x.val
+    def __lt__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
+        return self.val < x.val
+    def __le__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
+        return self.val <= x.val
+    def __ne__(self, x):
+        if str(x.__class__).find("int") != -1:
+            x = mfi(x, self.mod)
+        return self.val != x.val
+    #operators
     def __add__(self, x):
         if str(x.__class__).find("int") != -1:
             x = mfi(x, self.mod)
@@ -18,6 +44,7 @@ class mfi:
         return mfi((self.val * x.val) % self.mod, self.mod)
     def modinv(self):
         return mfi(gmpy.invert(self.val, self.mod), self.mod)
+    #converters
     def __int__(self):
         return int(self.val)
     def __str__(self):
