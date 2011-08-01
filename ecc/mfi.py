@@ -53,6 +53,9 @@ class mfi:
     def __str__(self):
         return str(self.val)
 
+    def __repr__(self):
+        return self.__str__()
+
 def main():
     a = mfi(4,7)
     b = mfi(5,7)
