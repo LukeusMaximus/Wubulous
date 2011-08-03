@@ -1,48 +1,35 @@
 from mfi import mfi
 
+import gmpy
+from time import time
 
 class ecc:
     def __init__(self, a4, a6, mod):
         self.a4 = mfi(a4, mod)
         self.a6 = mfi(a6, mod)
-        self.mod = mod
-    def satisfies_curve(self, x, y):
-        y = mfi(y, self.mod)
-        x = mfi(x, self.mod)
-        lhs = y * y
-        rhs = x * x * x + self.a4 * x + self.a6
+        self.mod = mod        
 
-        return lhs == rhs
-        
-#    def get_points_list(self):
-#        points = []
-#        for i in xrange(0, self.mod):
-#            for j in xrange(0, self.mod):
-#                if self.satisfies_curve(i, j):
-#                    points.append((i,j))
-#        return points
-#
+    def is_quadratic_residue(self, x):
+        l = x.jacobi()
+        return l == 1
+
     def get_points_list(self):
-        point = None
-        points = []
-        print "starting"
-        for i in xrange(0, self.mod):
-            print i
-            for j in xrange(0, self.mod):
-                if (j & (0x100-1) == 0): print j,self.mod
-                if self.satisfies_curve(i,j):
-                    point = (i,j)
-                    break
-            if point != None:   
-                break
-        print "got point"
-        points.append(point)
-        accum = (mfi(point[0], self.mod), mfi(point[1], self.mod))
-        for i in xrange(2,self.mod):
-            accum = self.add(accum[0],accum[1],point[0],point[1])
-            if accum not in points: points.append(accum)
-
+        points = [(0,1)]
+        x = mfi(1, self.mod)
+        while x != 0:
+            t = x * x * x + self.a4 * x + self.a6
+            qr = self.is_quadratic_residue(t)
+            if t == 0 or qr:
+                y = t.sqrt()
+                points += [(x, y)]
+                if y != 0:
+                    y = -y
+                    points += [(x, y)]
+            if int(x) % 1000 == 0:
+                print "Done", x
+            x += 1
         return points
+   
     def negate(self, x,y):
         x = mfi(x, self.mod)
         y = mfi(y, self.mod)
