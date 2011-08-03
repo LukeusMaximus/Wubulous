@@ -87,29 +87,35 @@ class mfi:
     def __repr__(self):
         return self.__str__()
 
+def test(test, expected):
+    if test == expected:
+        return "PASS"
+    else:
+        return "FAIL: " + test + " != " + expected
+
 def main():
     a = mfi(4,7)
     b = mfi(5,7)
-    print str(a + b) #2
-    print str(a * b) #6
-    print str(a - b) #6
-    print str(a.modinv()) #2
-    print str(b.modinv()) #3
-    print str(a - 2) #2
-    print str(b + a + 496) #1
-    print str(b * 3) #1
-    print str(a > b) #False
-    print str(a == b) #False
-    print str(a <= b) #True
-    print str(a != b) #True
+    print test(a + b, 2)
+    print test(a * b, 6)
+    print test(a - b, 6)
+    print test(a.modinv(), 2)
+    print test(b.modinv(), 3)
+    print test(a - 2, 2)
+    print test(b + a + 496, 1)
+    print test(b * 3, 1)
+    print test(a > b, False)
+    print test(a == b, False)
+    print test(a <= b, True)
+    print test(a != b, True)
     c = mfi(a,7)
-    print str(c == a) #True
-    print str(-b) #2
-    print str(-a) #3
-    print str(a ** 4) #4
+    print test(c == a, True)
+    print test(-b, 2)
+    print test(-a, 3)
+    print test(a ** 4, 4)
     d = mfi(12345, 331)
-    print d.legendre() #-1
-    print d.jacobi() #-1
+    print test(d.legendre(), -1)
+    print test(d.jacobi(), -1)
 
 if __name__ == "__main__":
     main()
