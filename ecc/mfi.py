@@ -33,6 +33,8 @@ class mfi:
             x = mfi(x, self.mod)
         return self.val != x.val
     #operators
+    def __neg__(self):
+        return mfi((self.mod - self.val), self.mod)
     def __add__(self, x):
         if str(x.__class__).find("int") != -1:
             x = mfi(x, self.mod)
@@ -71,6 +73,10 @@ def main():
     print str(a == b) #False
     print str(a <= b) #True
     print str(a != b) #True
+    c = mfi(a,7)
+    print str(c == a) #True
+    print str(-b) #2
+    print str(-a) #3
 
 if __name__ == "__main__":
     main()
