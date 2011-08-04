@@ -1,4 +1,5 @@
 import gmpy
+import random
 
 class mfi:
     def __init__(self, i, n): 
@@ -41,19 +42,66 @@ class mfi:
     def __mul__(self, x):
         x = self.mfi_(x)
         return self.mfi_(self.val * x.val)
+    def __mod__(self, x):
+        x = self.mfi_(x)
+        return self.mfi_(self.val % x.val)
     def __pow__(self, x, mod=None):
         x = self.mfi_(x)
-        if mod == None:
-            mod = self.mod
-        return self.mfi_(self.val ** x.val)
+        if x < 0:
+            return self.mfi_(0)
+        accum = self.mfi_(1)
+        val = self
+        while x > 0:
+            if x % 2 == 0:
+                x = x >> 1
+                val = val * val
+            else:
+                x -= 1
+                accum = accum * val             
+        return self.mfi_(accum)
+    def __rshift__(self, x):
+        x = self.mfi_(x)
+        return self.mfi_(self.val >> x.val)
+    def __lshift__(self, x):
+        x = self.mfi_(x)
+        return self.mfi_(self.val << x.val)
     def modinv(self):
         return self.mfi_(gmpy.invert(self.val, self.mod))
     def is_square(self):
         return self.val.is_square()
     def sqrt(self):
         return self.mfi_(gmpy.sqrt(self.val))
+    def modsqrt(self):
+        if self.jacobi() != 1:
+            return self.mfi_(0)
+        q = self.mfi_(-1)
+        s = self.mfi_(0)
+        while q % 2 == 0:
+            q = q >> 1
+            s += 1
+        z = self.mfi_(0)
+        while z.jacobi() != -1:
+            z += 1
+        c = z ** q
+        r = self ** ((q + 1) >> 1) 
+        t = self ** q
+        m = s
+        while t != 1:
+            i = self.mfi_(0)
+            while t != 1:
+                t = t * t
+                i += 1
+            b = c
+            for j in xrange(0, m - i - 1):
+                b = b * b
+            r = r * b
+            t = t * b * b
+            c = b * b
+            m = i
+            root = self.mfi_(r)
+        return [r, -r]
     def legendre(self):
-        return self.mfi_(self.__pow__((self.mod - 1) / 2))
+        return self.__pow__((self.mod - 1) / 2)
     def jacobi(self):
         a = self.val
         b = self.mod
@@ -89,33 +137,60 @@ class mfi:
 
 def test(test, expected):
     if test == expected:
-        return "PASS"
+        print "PASS"
     else:
-        return "FAIL: " + test + " != " + expected
+        print "FAIL: ", test, " != ", expected
 
 def main():
     a = mfi(4,7)
     b = mfi(5,7)
-    print test(a + b, 2)
-    print test(a * b, 6)
-    print test(a - b, 6)
-    print test(a.modinv(), 2)
-    print test(b.modinv(), 3)
-    print test(a - 2, 2)
-    print test(b + a + 496, 1)
-    print test(b * 3, 1)
-    print test(a > b, False)
-    print test(a == b, False)
-    print test(a <= b, True)
-    print test(a != b, True)
+    print "Operators:"
+    test(a + b, 2)
+    test(a * b, 6)
+    test(a - b, 6)
+    print "Modular inverse:"
+    test(a.modinv(), 2)
+    test(b.modinv(), 3)
+    print "Operators with integers:"
+    test(a - 2, 2)
+    test(b + a + 496, 1)
+    test(b * 3, 1)
+    print "Comparisons:"
+    test(a > b, False)
+    test(a == b, False)
+    test(a <= b, True)
+    test(a != b, True)
     c = mfi(a,7)
-    print test(c == a, True)
-    print test(-b, 2)
-    print test(-a, 3)
-    print test(a ** 4, 4)
+    test(c == a, True)
+    print "Negation:"
+    test(-b, 2)
+    test(-a, 3)
+    print "Exponentiation:"
+    h = mfi(3, 7)
+    test(h ** h, 6)
+    test(a ** 4, 4)
+    test(b ** 2, 4)
+    test(a ** b, 2)
+    test(b ** b, 3)
+    j = mfi(15, 31)
+    k = mfi(3, 31)
+    l = mfi(13, 31)
+    test(k ** j, 30)
+    test(j ** l, 27)
+    m = mfi(344487, 333333)
+    n = mfi(212105, 333333)
+    test(m ** n, 290862)
+    test(n ** m, 4096)
+    print "Legendre and Jacobi:"
     d = mfi(12345, 331)
-    print test(d.legendre(), -1)
-    print test(d.jacobi(), -1)
+    test(d.legendre(), -1)
+    test(d.jacobi(), -1)
+    test(b.jacobi(), -1)
+    print "Modular square root:"
+    f = mfi(10, 13)
+    g = mfi(7, 13)
+    test(f.modsqrt().sort(), [g, -g].sort())
+    test((b ** 2).modsqrt().sort(), [b, -b].sort())
 
 if __name__ == "__main__":
     main()

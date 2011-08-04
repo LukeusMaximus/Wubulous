@@ -17,23 +17,26 @@ class ecc:
     def is_valid_point(self, x, y):
         x = mfi(x, self.mod)
         y = mfi(y, self.mod)
-        r = x**3 + x*self.a4 + self.a6
+        if x == 0 and y == 1:
+            return True
         l = y**2
+        r = x**3 + x*self.a4 + self.a6
         return l == r
 
     def get_point(self, n):
         x = mfi(n, self.mod)
         while x != 0:
-            t = x * x * x + self.a4 * x + self.a6
+            t = (x ** 3) + (self.a4 * x) + self.a6
             if t == 0:
                 return [(x, mfi(0, self.mod))]
-            elif self.is_quadratic_residue(t):
-                return [(x, t.sqrt()), (x, -t.sqrt())]
+            else:
+                vals = t.modsqrt()
+                return [(x, vals[0]), (x, vals[1])]
             x += 1
         return []
 
     def get_random_point(self):
-        r = gmpy.mpz(random.random() * self.mod)
+        r = gmpy.mpz(random.randint(0, self.mod-1))
         return random.choice(self.get_point(r))
 
     def get_points_list(self):
@@ -104,12 +107,16 @@ class ecc:
 if __name__ == "__main__":
     x = []
     y = []
-    small_curve = ecc(1, 3, 7)
-    print small_curve.get_points_list()
     curve = ecc(2147483656,2060571714,2147483659)
+    p = (1466500883, 1666020463)
+    assert p in curve.get_point(p[0])
+    q = (873198119, 717233109)
+    assert q in curve.get_point(q[0])
+    r = (1864484320, 414554908)
+    assert r in curve.get_point(r[0])
+    assert curve.add(p[0], p[1], q[0], q[1]) == (r[0], r[1])
     point = curve.get_random_point()
+    assert curve.is_valid_point(point[0],point[1])
     point2 = curve.multiply(point[0],point[1], random.randint(1,5))
-    print point
-    print point2
-    assert ecc.is_valid_point(point2[0],point2[1])
-
+    assert curve.is_valid_point(point2[0],point2[1])
+    print "Everything works"
