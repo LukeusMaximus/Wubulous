@@ -34,7 +34,7 @@ class ecc:
 
     def get_random_point(self):
         r = gmpy.mpz(random.random() * self.mod)
-        return self.get_point(r)
+        return random.choice(self.get_point(r))
 
     def get_points_list(self):
         points = [(0,1)]
@@ -107,6 +107,9 @@ if __name__ == "__main__":
     small_curve = ecc(1, 3, 7)
     print small_curve.get_points_list()
     curve = ecc(2147483656,2060571714,2147483659)
-    print curve.get_random_point()
-    
+    point = curve.get_random_point()
+    point2 = curve.multiply(point[0],point[1], random.randint(1,5))
+    print point
+    print point2
+    assert ecc.is_valid_point(point2[0],point2[1])
 
