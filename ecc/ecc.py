@@ -22,6 +22,7 @@ class ecc:
                 return [(x, mfi(0, self.mod))]
             elif self.is_quadratic_residue(t):
                 return [(x, t.sqrt()), (x, -t.sqrt())]
+            x += 1
         return []
 
     def get_random_point(self):
