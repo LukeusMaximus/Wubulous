@@ -2,6 +2,7 @@ from mfi import mfi
 
 import gmpy
 from time import time
+import random
 
 class ecc:
     def __init__(self, a4, a6, mod):
@@ -12,6 +13,20 @@ class ecc:
     def is_quadratic_residue(self, x):
         l = x.jacobi()
         return l == 1
+
+    def get_point(self, n):
+        x = mfi(n, self.mod)
+        while x != 0:
+            t = x * x * x + self.a4 * x + self.a6
+            if t == 0:
+                return [(x, mfi(0, self.mod))]
+            elif self.is_quadratic_residue(t):
+                return [(x, t.sqrt()), (x, -t.sqrt())]
+        return []
+
+    def get_random_point(self):
+        r = gmpy.mpz(random.random() * self.mod)
+        return self.get_point(r)
 
     def get_points_list(self):
         points = [(0,1)]
@@ -90,10 +105,6 @@ if __name__ == "__main__":
     x = []
     y = []
     curve = ecc(2147483656,2060571714,2147483659)
-    pairs = curve.get_points_list()
-    for x in pairs:
-        if x[0].val == 1466500883:
-            print x[1].val
-    print curve.double(pairs[0][0], pairs[0][1])
-    print curve.multiply(pairs[0][0], pairs[0][1], 2)
+    print curve.get_random_point()
+    
 
