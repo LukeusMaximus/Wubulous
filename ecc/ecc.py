@@ -14,6 +14,13 @@ class ecc:
         l = x.jacobi()
         return l == 1
 
+    def is_valid_point(self, x, y):
+        x = mfi(x, self.mod)
+        y = mfi(y, self.mod)
+        r = x**3 + x*self.a4 + self.a6
+        l = y**2
+        return l == r
+
     def get_point(self, n):
         x = mfi(n, self.mod)
         while x != 0:
@@ -33,17 +40,9 @@ class ecc:
         points = [(0,1)]
         x = mfi(1, self.mod)
         while x != 0:
-            t = x * x * x + self.a4 * x + self.a6
-            qr = self.is_quadratic_residue(t)
-            if t == 0 or qr:
-                y = t.sqrt()
-                points += [(x, y)]
-                if y != 0:
-                    y = -y
-                    points += [(x, y)]
-            if int(x) % 1000 == 0:
-                print "Done", x
-            x += 1
+            p = self.get_point(x)
+            points += p
+            x = p[0][0] + 1
         return points
    
     def negate(self, x,y):
@@ -105,6 +104,8 @@ class ecc:
 if __name__ == "__main__":
     x = []
     y = []
+    small_curve = ecc(1, 3, 7)
+    print small_curve.get_points_list()
     curve = ecc(2147483656,2060571714,2147483659)
     print curve.get_random_point()
     
