@@ -46,7 +46,8 @@ class mfi:
         x = self.mfi_(x)
         return self.mfi_(self.val % x.val)
     def __pow__(self, x, mod=None):
-        x = self.mfi_(x)
+        if str(x.__class__).find("mfi") != -1:
+            x = x.val
         if x < 0:
             return self.mfi_(0)
         accum = self.mfi_(1)
@@ -73,7 +74,7 @@ class mfi:
         return self.mfi_(gmpy.sqrt(self.val))
     def modsqrt(self):
         if self.jacobi() != 1:
-            return self.mfi_(0)
+            return [self.mfi_(0)]
         q = self.mfi_(-1)
         s = self.mfi_(0)
         while q % 2 == 0:
@@ -181,6 +182,7 @@ def main():
     n = mfi(212105, 333333)
     test(m ** n, 290862)
     test(n ** m, 4096)
+    test(m ** 444444, 296010)
     print "Legendre and Jacobi:"
     d = mfi(12345, 331)
     test(d.legendre(), -1)
