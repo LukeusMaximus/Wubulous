@@ -29,14 +29,17 @@ class ecc:
             t = (x ** 3) + (self.a4 * x) + self.a6
             if t == 0:
                 return [(x, mfi(0, self.mod))]
-            else:
+            elif self.is_quadratic_residue(t):
                 vals = t.modsqrt()
-                return [(x, vals[0]), (x, vals[1])]
+                points = []
+                for k in vals:
+                    points.append((x,k))
+                return points
             x += 1
         return []
 
     def get_random_point(self):
-        r = gmpy.mpz(random.randint(0, self.mod-1))
+        r = gmpy.mpz(random.random() * self.mod)
         return random.choice(self.get_point(r))
 
     def get_points_list(self):
